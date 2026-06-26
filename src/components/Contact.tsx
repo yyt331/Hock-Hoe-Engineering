@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Phone, Mail, MapPin, Clock, X, Monitor, Copy } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, X, Monitor, Copy, Smartphone } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Contact() {
   const { language } = useLanguage();
   const [showModal, setShowModal] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  
+  useEffect(() => {
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent));
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -266,18 +272,29 @@ ${formData.message}`;
                   className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
                 >
                   <Monitor size={20} className="flex-shrink-0" />
-                  <span>{language === 'en' ? 'Default App (Mail, Gmail App, Outlook)' : '默认应用 (邮件应用, 手机 Gmail, Outlook)'}</span>
+                  <span>{language === 'en' ? 'Default App (Mail, Android Gmail, Outlook)' : '默认应用 (邮件应用, 安卓 Gmail, Outlook)'}</span>
                 </a>
                 
+                {isIOS && (
+                  <a
+                    href={`googlegmail:///co?to=hockhoenskce@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
+                    onClick={() => setShowModal(false)}
+                    className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                  >
+                    <Smartphone size={20} className="flex-shrink-0" />
+                    <span>{language === 'en' ? 'Open in iPhone Gmail App' : '使用 iPhone Gmail 应用打开'}</span>
+                  </a>
+                )}
+
                 <a
                   href={`https://mail.google.com/mail/?view=cm&fs=1&to=hockhoenskce@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowModal(false)}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                  className={`w-full ${isIOS ? 'hidden md:flex' : 'flex'} items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors`}
                 >
                   <Mail size={20} className="flex-shrink-0" />
-                  <span>{language === 'en' ? 'Open in Gmail' : '使用 Gmail 打开'}</span>
+                  <span>{language === 'en' ? 'Open in Gmail (Web)' : '使用 Gmail 网页版打开'}</span>
                 </a>
 
                 <button
