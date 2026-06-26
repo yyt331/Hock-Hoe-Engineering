@@ -274,10 +274,10 @@ ${formData.message}`;
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowModal(false)}
-                  className="w-full hidden md:flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
                 >
                   <Mail size={20} className="flex-shrink-0" />
-                  <span>{language === 'en' ? 'Open in Gmail (Desktop Browser)' : '使用 Gmail 打开 (桌面浏览器)'}</span>
+                  <span>{language === 'en' ? 'Open in Gmail' : '使用 Gmail 打开'}</span>
                 </a>
 
                 <button
