@@ -35,18 +35,6 @@ ${formData.message}`;
     setShowModal(true);
   };
 
-  const openGmail = () => {
-    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=hockhoenskce@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(gmailLink, '_blank');
-    setShowModal(false);
-  };
-
-  const openDefaultMail = () => {
-    const mailtoLink = `mailto:hockhoenskce@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
-    setShowModal(false);
-  };
-
   const copyToClipboard = () => {
     const textToCopy = `To: hockhoenskce@gmail.com\nSubject: ${subject}\n\n${body}`;
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -272,26 +260,32 @@ ${formData.message}`;
               </p>
               
               <div className="space-y-4">
-                <button
-                  onClick={openGmail}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
-                >
-                  <Mail size={20} />
-                  {language === 'en' ? 'Open in Gmail (Web/App)' : '使用 Gmail 打开'}
-                </button>
-                <button
-                  onClick={openDefaultMail}
+                <a
+                  href={`mailto:hockhoenskce@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
+                  onClick={() => setShowModal(false)}
                   className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
                 >
-                  <Monitor size={20} />
-                  {language === 'en' ? 'Default App (Apple Mail, Outlook)' : '默认应用 (Apple Mail, Outlook)'}
-                </button>
+                  <Monitor size={20} className="flex-shrink-0" />
+                  <span>{language === 'en' ? 'Default App (Mail, Gmail App, Outlook)' : '默认应用 (邮件应用, 手机 Gmail, Outlook)'}</span>
+                </a>
+                
+                <a
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=hockhoenskce@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowModal(false)}
+                  className="w-full hidden md:flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                >
+                  <Mail size={20} className="flex-shrink-0" />
+                  <span>{language === 'en' ? 'Open in Gmail (Desktop Browser)' : '使用 Gmail 打开 (桌面浏览器)'}</span>
+                </a>
+
                 <button
                   onClick={copyToClipboard}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-medium transition-colors"
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-medium transition-colors cursor-pointer"
                 >
-                  <Copy size={20} />
-                  {language === 'en' ? 'Copy Details to Clipboard' : '复制详细信息到剪贴板'}
+                  <Copy size={20} className="flex-shrink-0" />
+                  <span>{language === 'en' ? 'Copy Details to Clipboard' : '复制详细信息到剪贴板'}</span>
                 </button>
               </div>
             </motion.div>
