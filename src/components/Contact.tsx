@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Phone, Mail, MapPin, Clock, X, Monitor, Copy } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Contact() {
   const { language } = useLanguage();
+  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,11 +21,8 @@ export default function Contact() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const subject = `New Quote Request from ${formData.name || 'Website Visitor'}`;
-    const body = `Name: ${formData.name}
+  const subject = `New Quote Request from ${formData.name || 'Website Visitor'}`;
+  const body = `Name: ${formData.name}
 Phone: ${formData.phone}
 Email: ${formData.email}
 Service Interested In: ${formData.service}
@@ -32,8 +30,29 @@ Service Interested In: ${formData.service}
 Message:
 ${formData.message}`;
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowModal(true);
+  };
+
+  const openGmail = () => {
+    const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=hockhoenskce@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(gmailLink, '_blank');
+    setShowModal(false);
+  };
+
+  const openDefaultMail = () => {
     const mailtoLink = `mailto:hockhoenskce@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
+    setShowModal(false);
+  };
+
+  const copyToClipboard = () => {
+    const textToCopy = `To: hockhoenskce@gmail.com\nSubject: ${subject}\n\n${body}`;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert(language === 'en' ? "Information copied to clipboard! You can paste it into any email client." : "信息已复制到剪贴板！您可以将其粘贴到任何电子邮件客户端。");
+    });
+    setShowModal(false);
   };
 
   return (
@@ -227,6 +246,58 @@ ${formData.message}`;
 
         </div>
       </div>
+
+      {/* Email Options Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white p-8 max-w-md w-full shadow-2xl relative border-t-4 border-accent"
+            >
+              <button 
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-primary transition-colors"
+                aria-label="Close modal"
+              >
+                <X size={24} />
+              </button>
+              <h4 className="text-2xl font-serif font-bold text-primary mb-2">
+                {language === 'en' ? 'Choose Email App' : '选择邮件应用'}
+              </h4>
+              <p className="text-gray-600 mb-8 font-light">
+                {language === 'en' ? 'How would you like to send this request?' : '您想如何发送此请求？'}
+              </p>
+              
+              <div className="space-y-4">
+                <button
+                  onClick={openGmail}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-red-500 hover:bg-red-600 text-white font-medium transition-colors"
+                >
+                  <Mail size={20} />
+                  {language === 'en' ? 'Open in Gmail (Web/App)' : '使用 Gmail 打开'}
+                </button>
+                <button
+                  onClick={openDefaultMail}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-primary hover:bg-primary/90 text-white font-medium transition-colors"
+                >
+                  <Monitor size={20} />
+                  {language === 'en' ? 'Default App (Apple Mail, Outlook)' : '默认应用 (Apple Mail, Outlook)'}
+                </button>
+                <button
+                  onClick={copyToClipboard}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-4 border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 font-medium transition-colors"
+                >
+                  <Copy size={20} />
+                  {language === 'en' ? 'Copy Details to Clipboard' : '复制详细信息到剪贴板'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
